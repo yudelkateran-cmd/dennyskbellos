@@ -1,24 +1,37 @@
 <template>
   <div id="app">
-    <header class="main-header">
-      <h1 class="brand-name">DennysKbellos</h1>
-      <p class="subtitle">Expertos en Colorimetría y Estilo</p>
-    </header>
+    <HeaderView />
 
-    <main>
-      <FormularioCita />
+    <main class="main-content">
+      <router-view />
     </main>
+
+    <FooterView />
   </div>
 </template>
 
+<script setup>
+// Importamos tus nuevos archivos usando el alias "@" que configuramos
+import HeaderView from '@/components/HeaderView.vue';
+import FooterView from '@/components/FooterView.vue';
+</script>
+
 <style>
-.brand-name {
-  color: #4e342e; /* Café */
-  font-size: 2.5rem;
-  margin-bottom: 0;
+/* Estilos globales para DennysKbellos */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ocupa el 100% de la altura de la pantalla */
 }
-.subtitle {
-  color: #ff80ab; /* Rosado */
-  font-style: italic;
+
+.main-content {
+  flex: 1; /* Esto empuja al Footer hacia abajo si la página tiene poco contenido */
+  background-color: #fdfaf9; /* Ese color crema suave que armoniza con el café */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 </style>
