@@ -3,16 +3,20 @@ const path = require('path')
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  
+  // 1. Configuración de rutas para GitHub Pages
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/Dennyskbellos/' 
+    : '/',
+
+  // 2. Carpeta de salida para que GitHub la reconozca
+  outputDir: 'docs',
+
   configureWebpack: {
     resolve: {
       alias: {
-        // Esto le dice a Vue que "@" equivale a la carpeta "src"
         '@': path.resolve(__dirname, 'src')
       }
     }
-  },
-  // Opcional: Esto ayuda si vas a subir la página a un subdominio o carpeta específica
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/'
-    : '/'
+  }
 })
