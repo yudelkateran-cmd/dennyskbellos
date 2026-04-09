@@ -7,7 +7,7 @@ export default createStore({
     nombreNegocio: 'DennysKbellos',
     contacto: {
       whatsapp: '+56 9 5691 9142',
-      instagram: '@dennyskbellos'
+      instagram: '@dennys_kbellos'
     }
   },
   getters: {
