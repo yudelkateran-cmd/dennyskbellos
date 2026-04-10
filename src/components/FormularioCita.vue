@@ -1,7 +1,7 @@
 <template>
   <div class="booking-container">
     <h2>Agendar Cita en DennysKbellos</h2>
-    
+
     <form @submit.prevent="enviarCita">
       <label>Selecciona el Servicio:</label>
       <select v-model="nuevaCita.servicio" required>
@@ -12,22 +12,18 @@
 
       <input v-model="nuevaCita.name" type="text" placeholder="Tu Nombre" required />
       <input v-model="nuevaCita.phone" type="tel" placeholder="WhatsApp +569..." required />
-      
-      <label>Selecciona la Fecha:</label>
       <input v-model="nuevaCita.fecha" type="date" :min="fechaMinima" @change="validarDisponibilidad" required />
+
+      <label>Selecciona la Fecha:</label>
+      <input v-model="nuevaCita.fecha" type="date" :min="fechaMinima" required />
 
       <!-- Selector de Horas Estilo Botones -->
       <div v-if="nuevaCita.fecha" class="horas-container">
         <label>Selecciona una Hora Disponible:</label>
         <div class="horas-grid">
-          <button 
-            type="button"
-            v-for="h in bloquesHorarios" 
-            :key="h"
-            :class="['hora-btn', { 'seleccionada': nuevaCita.hora === h }]"
-            :disabled="estaOcupada(nuevaCita.fecha, h)"
-            @click="nuevaCita.hora = h"
-          >
+          <button type="button" v-for="h in bloquesHorarios" :key="h"
+            :class="['hora-btn', { 'seleccionada': nuevaCita.hora === h }]" :disabled="estaOcupada(nuevaCita.fecha, h)"
+            @click="nuevaCita.hora = h">
             {{ h }}
           </button>
         </div>
@@ -74,7 +70,9 @@ const cargarCitas = async () => {
 };
 
 // 2. Verificar si la hora está ocupada
+/* @ts-ignore */
 const estaOcupada = (fecha, hora) => {
+  /* @ts-ignore */
   return citasExistentes.value.some(c => c.fecha === fecha && c.hora === hora);
 };
 
@@ -88,6 +86,10 @@ const enviarCita = async () => {
     alert('Error al reservar.');
   }
 };
+const validarDisponibilidad = () => {
+  nuevaCita.value.hora = ''; // Reiniciamos la hora para que el usuario elija una nueva válida
+  console.log("Cambiando fecha, validando horas disponibles...");
+};
 
 onMounted(cargarCitas);
 </script>
@@ -100,11 +102,12 @@ onMounted(cargarCitas);
   padding: 30px;
   border-radius: 20px;
   background: #ffffff;
-  border: 1px solid #d7ccc8; 
+  border: 1px solid #d7ccc8;
   box-shadow: 0 15px 35px rgba(121, 85, 72, 0.1);
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
