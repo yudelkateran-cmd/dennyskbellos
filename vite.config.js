@@ -4,13 +4,9 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
-  define: {
-    'process.env': {}
-  },
-
-  base: '/dennyskbellos/', 
+  base: '/dennyskbellos/',
   build: {
-    outDir: 'docs',
+    outDir: 'docs', // ¡IMPORTANTE! Esto le dice a Vite que guarde todo en docs
   },
   resolve: {
     alias: {
