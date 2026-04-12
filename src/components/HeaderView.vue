@@ -1,112 +1,155 @@
 <template>
   <header class="main-header">
-    <div class="logo">DennysKbellos</div>
+    <div class="header-container">
+      <div class="brand">
+        <router-link to="/" class="logo-text">DennysK'bellos</router-link>
+      </div>
 
-    <div class="logo-container">
-      <router-link to="/">
-        <img src="@/assets/logo.jpeg" alt="Logo DennysKbellos" class="logo-img">
-      </router-link>
+      <div class="logo-central">
+        <router-link to="/">
+          <img src="@/assets/logo.jpeg" alt="DennysKbellos Logo" class="logo-img">
+        </router-link>
+      </div>
+
+      <nav class="nav-menu">
+        <router-link to="/" class="nav-link">Inicio</router-link>
+        <router-link to="/servicios" class="nav-link">Servicios</router-link>
+
+        <div v-if="!usuarioActivo" class="auth-buttons">
+          <router-link to="/login" class="nav-link">Entrar</router-link>
+          <router-link to="/registro" class="btn-glitter">Registrarse</router-link>
+        </div>
+
+        <div v-else class="user-profile">
+          <div class="user-info">
+            <span class="greeting">Hola,</span>
+            <span class="name">{{ usuarioActivo.displayName?.split(' ')[0] }}</span>
+          </div>
+          <div class="avatar">
+            {{ usuarioActivo.displayName?.charAt(0).toUpperCase() }}
+          </div>
+        </div>
+      </nav>
     </div>
-
-    <nav class="nav-menu">
-      <router-link to="/" class="nav-link">Inicio</router-link>
-      <router-link to="/servicios" class="nav-link">Servicios</router-link>
-      <router-link to="/login" class="nav-link">Entrar</router-link>
-      <router-link to="/registro" class="btn-glitter">Registrarse</router-link>
-    </nav>
   </header>
 </template>
 
+<script setup>
+import { ref, onMounted } from 'vue';
+import { auth } from '@/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+
+const usuarioActivo = ref(null);
+
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    usuarioActivo.value = user;
+  });
+});
+</script>
+
 <style scoped>
 .main-header {
+  background: white;
+  border-bottom: 1px solid #fce4ec;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 5%;
-  background: white;
-  border-bottom: 1px solid #fce4ec;
+  padding: 0 20px;
 }
 
-.logo {
+/* Lado Izquierdo */
+.logo-text {
   font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: #4e342e;
+  text-decoration: none;
   font-weight: bold;
 }
 
-.btn-login {
-  color: #4e342e !important;
-  /* Café premium */
-  font-weight: 600;
-  padding: 8px 15px;
-  border-radius: 20px;
-  transition: all 0.3s ease;
-}
-
-.btn-login:hover {
-  background-color: #fce4ec;
-  /* Un fondo rosado muy suave al pasar el mouse */
-  color: #ff80ab !important;
-  /* Cambia el texto a rosado */
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-}
-
-.logo-img {
-  height: 60px;
+/* Centro - El logo controlado */
+.logo-central .logo-img {
+  height: 80px; /* Tamaño controlado para que no rompa nada */
   width: auto;
-  object-fit: contain;
-  transition: transform 0.3s ease;
+  display: block;
 }
 
-/* AQUÍ ESTÁ EL CAMBIO CLAVE */
+/* Lado Derecho */
 .nav-menu {
   display: flex;
-  /* Alinea todo en fila */
   align-items: center;
-  /* Centra verticalmente el texto con el botón */
-  gap: 20px;
-  /* Espacio uniforme entre cada elemento */
+  gap: 15px;
 }
 
 .nav-link {
   text-decoration: none;
-  color: #4e342e !important; /* Café premium */
-  font-weight: 600;
-  padding: 8px 15px;
-  border-radius: 20px;
-  transition: all 0.3s ease;
-}
-
-/** .nav-menu a {
-  text-decoration: none;
   color: #4e342e;
-  font-weight: 500;
-  transition: color 0.3s;
-}*/
-
-.nav-menu a:hover {
-  color: #ff80ab;
-  /* Un toque de color al pasar el mouse */
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px 12px;
+  transition: 0.3s;
 }
+
 .nav-link:hover {
-  background-color: #fce4ec; /* Fondo rosado suave */
-  color: #ff80ab !important;  /* Texto rosado */
+  color: #ff80ab;
 }
 
 .btn-glitter {
-  background: linear-gradient(45deg, #ff80ab, #f48fb1, #fce4ec);
-  color: white !important;
-  padding: 8px 25px;
+  background: linear-gradient(45deg, #ff80ab, #f48fb1);
+  color: white;
+  padding: 10px 20px;
   border-radius: 50px;
   text-decoration: none;
+  font-weight: bold;
+  font-size: 0.9rem;
   box-shadow: 0 4px 10px rgba(255, 128, 171, 0.3);
-  transition: transform 0.3s ease;
 }
-.btn-glitter:hover {
-  transform: scale(1.05);
+
+/* Perfil Usuario */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff5f8;
+  padding: 5px 15px;
+  border-radius: 50px;
+  border: 1px solid #fce4ec;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  text-align: right;
+}
+
+.greeting { font-size: 0.7rem; color: #ad8a81; }
+.name { font-size: 0.85rem; font-weight: bold; color: #4e342e; }
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  background: #ff80ab;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .logo-text { display: none; }
+  .logo-central .logo-img { height: 60px; }
 }
 </style>

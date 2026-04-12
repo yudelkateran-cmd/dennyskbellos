@@ -16,23 +16,14 @@
       <label>Selecciona la Fecha:</label>
       <div v-if="mensajeDiaLleno" class="aviso-lleno">{{ mensajeDiaLleno }}</div>
 
-      <VDatePicker 
-        v-model="fechaSeleccionada" 
-        :min-date="new Date()" 
-        :attributes="atributosCalendario"
-        @dayclick="onDiaSeleccionado" 
-        mode="date" 
-        expanded 
-        transparent 
-        borderless 
-      />
+      <VDatePicker v-model="fechaSeleccionada" :min-date="new Date()" :attributes="atributosCalendario"
+        @dayclick="onDiaSeleccionado" mode="date" expanded transparent borderless />
 
       <div v-if="nuevaCita.fecha && !mensajeDiaLleno" class="horas-container">
         <label>Selecciona una Hora Disponible:</label>
         <div class="horas-grid">
           <button type="button" v-for="h in bloquesHorarios" :key="h"
-            :class="['hora-btn', { 'seleccionada': nuevaCita.hora === h }]" 
-            :disabled="estaOcupada(nuevaCita.fecha, h)"
+            :class="['hora-btn', { 'seleccionada': nuevaCita.hora === h }]" :disabled="estaOcupada(nuevaCita.fecha, h)"
             @click="nuevaCita.hora = h">
             {{ h }}
           </button>
@@ -60,8 +51,8 @@ const fechaSeleccionada = ref(new Date()); // Para controlar el estado del calen
 // Marcadores visuales para el calendario
 const atributosCalendario = computed(() => {
   return citasExistentes.value.map(cita => ({
-    dot: 'pink', 
-    dates: new Date(cita.fecha + 'T12:00:00'), 
+    dot: 'pink',
+    dates: new Date(cita.fecha + 'T12:00:00'),
     popover: { label: 'Día con citas' }
   }));
 });
@@ -122,13 +113,21 @@ onMounted(cargarCitas);
 <style scoped>
 /* Tus estilos están impecables, mantengo la coherencia visual */
 .booking-container {
-  max-width: 500px;
+  max-width: 600px;
   margin: 40px auto;
-  padding: 30px;
-  border-radius: 20px;
+  padding: 40px;
+  border-radius: 25px;
   background: #ffffff;
-  border: 1px solid #d7ccc8;
-  box-shadow: 0 15px 35px rgba(121, 85, 72, 0.1);
+  border: 1px solid #fce4ec;
+  box-shadow: 0 20px 40px rgba(121, 85, 72, 0.08);
+  font-family: 'Playfair Display', serif;
+}
+
+h2 {
+  color: #4e342e;
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .aviso-lleno {
@@ -141,7 +140,8 @@ onMounted(cargarCitas);
   border: 1px solid #ffcdd2;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
@@ -149,36 +149,7 @@ input, select {
   border: 1px solid #d7ccc8;
 }
 
-.horas-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin: 15px 0;
-}
 
-.hora-btn {
-  padding: 10px;
-  border: 1px solid #ff80ab;
-  background: white;
-  color: #ff80ab;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-  font-size: 0.9rem;
-}
-
-.hora-btn.seleccionada {
-  background: #ff80ab;
-  color: white;
-}
-
-.hora-btn:disabled {
-  background: #eee;
-  border-color: #ccc;
-  color: #aaa;
-  cursor: not-allowed;
-  text-decoration: line-through;
-}
 
 .btn-enviar {
   width: 100%;
@@ -190,5 +161,99 @@ input, select {
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  color: #6d4c41;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+/* Estilo para los selectores e inputs de texto */
+input[type="text"],
+input[type="tel"],
+select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid #eee;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #ff80ab;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 128, 171, 0.1);
+}
+
+/* --- ESTILO V-CALENDAR DENNYSKBELLOS --- */
+:deep(.vc-container) {
+  border: 1.5px solid #fce4ec !important;
+  border-radius: 15px !important;
+  font-family: inherit !important;
+  margin: 15px 0;
+}
+
+:deep(.vc-pink) {
+  --vc-accent-600: #ff80ab;
+  /* El rosa de tu marca */
+}
+
+/* --- GRID DE HORAS --- */
+.horas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.hora-btn {
+  padding: 12px;
+  border: 1.5px solid #ff80ab;
+  background: transparent;
+  color: #ff80ab;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.hora-btn.seleccionada {
+  background: #ff80ab;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 128, 171, 0.3);
+}
+
+.hora-btn:disabled {
+  background: #f5f5f5;
+  border-color: #ddd;
+  color: #bbb;
+  text-decoration: line-through;
+}
+
+.btn-enviar {
+  width: 100%;
+  margin-top: 35px;
+  background: linear-gradient(45deg, #ff80ab, #f48fb1);
+  color: white;
+  border: none;
+  padding: 18px;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(255, 128, 171, 0.2);
 }
 </style>

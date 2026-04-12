@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-card">
       <div class="logo-space">
-        <img src="@/assets/logo.jpeg" alt="Logo" class="mini-logo">
+        <img src="@/assets/dennys3.png" alt="Logo" class="mini-logo">
       </div>
       <h2>¡Qué bueno verte de nuevo!</h2>
       <p class="subtitle">Ingresa para agendar tu próxima transformación</p>

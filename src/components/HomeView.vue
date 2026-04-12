@@ -5,8 +5,8 @@
       <div class="hero-content">
         <h1 class="brand-title">DennysKbellos</h1>
         <p class="hero-subtitle">La magia de embellecer y cuidar tu cabello.</p>
-        <router-link to="/agendar-cita" class="btn-glitter-main">
-          Reservar Cita
+        <router-link :to="usuarioActivo ? '/agendar-cita' : '/login'" class="btn-glitter-main">
+          {{ usuarioActivo ? 'Reservar Cita' : 'Iniciar Sesión para Reservar' }}
         </router-link>
       </div>
     </section>
@@ -29,8 +29,9 @@
             en mis manos.
           </p>
           <p>
-            En <strong>DennysKbellos</strong>, no solo aplicamos técnica; hacemos magia con tu cabello. Diseñamos un estilo personalizado
-          usando productos premium para que cada hebra cuente tu propia historia de brillo y confianza.
+            En <strong>DennysKbellos</strong>, no solo aplicamos técnica; hacemos magia con tu cabello. Diseñamos un
+            estilo personalizado
+            usando productos premium para que cada hebra cuente tu propia historia de brillo y confianza.
           </p>
           <div class="signature">K'bellos by Dennys</div>
         </div>

@@ -1,6 +1,7 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAKG8iPsoHXmnhFiGUdRdr6kTIlvD4gf0I",
@@ -17,3 +18,4 @@ const app = initializeApp(firebaseConfig);
 
 // Exportamos la base de datos Firestore para usarla en tus vistas
 export const db = getFirestore(app);
+export const auth = getAuth(app);
