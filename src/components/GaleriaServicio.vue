@@ -1,7 +1,7 @@
 <template>
   <div class="galeria-grid">
     <div v-for="(foto, index) in imagenes" :key="index"
-      :class="['foto-item', Number(index) % 2 === 0 ? 'girar-der' : 'girar-izq']">
+      :class="['foto-item', index % 2 === 0 ? 'girar-der' : 'girar-izq']">
       <div class="marco-polaroid">
         <div class="contenedor-imagen">
           <img :src="foto" alt="Trabajo Real DennysKbellos" />
@@ -20,72 +20,80 @@ defineProps(['imagenes']);
 </script>
 
 <style scoped>
+/* Importamos una fuente manuscrita para el toque vintage */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap');
+
 .galeria-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-  padding: 20px;
-  /* Fondo que haga resaltar el blanco de las fotos */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 40px; /* Más espacio para que no choquen al rotar */
+  padding: 40px 20px;
   background-color: #fdfaf9;
+}
+
+.foto-item {
+  transition: transform 0.4s ease;
+  display: flex;
+  justify-content: center;
 }
 
 .marco-polaroid {
   background: white;
-  /* El secreto: padding desigual (más abajo) */
-  padding: 15px 15px 40px 15px;
+  padding: 12px 12px 35px 12px; /* Espacio extra abajo para el texto */
   border-radius: 2px;
-  /* Las fotos antiguas son más cuadradas */
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s ease;
-  position: relative;
-  border: 1px solid #eee;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #f0f0f0;
+  width: 100%;
+  max-width: 280px;
 }
 
 .contenedor-imagen {
   overflow: hidden;
-  aspect-ratio: 1 / 1;
-  /* Hace que la foto sea cuadrada como las de antes */
-  border: 1px solid #f0f0f0;
+  aspect-ratio: 1 / 1; /* Foto cuadrada estilo 600 */
+  background: #eee;
 }
 
 .contenedor-imagen img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Filtro suave para el look vintage */
-  filter: sepia(10%) contrast(105%);
+  display: block;
 }
 
-/* Efecto de rotación aleatoria */
+/* Rotación sutil */
 .girar-der {
-  transform: rotate(2deg) !important;
+  transform: rotate(3deg);
 }
 
 .girar-izq {
-  transform: rotate(-2deg) !important;
+  transform: rotate(-3deg);
 }
 
+/* Efecto al pasar el mouse */
 .foto-item:hover {
-  transform: rotate(0deg) scale(1.05);
+  transform: rotate(0deg) scale(1.1);
   z-index: 10;
 }
 
 .descripcion-vintage {
-  padding-top: 20px;
+  padding-top: 15px;
   text-align: center;
 }
 
 .descripcion-vintage p {
-  /* Una fuente cursiva se vería genial aquí */
-  font-family: 'Dancing Script', cursive, serif;
+  font-family: 'Dancing Script', cursive; /* Fuente manuscrita */
   color: #4e342e;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   margin: 0;
+  line-height: 1;
 }
 
 .descripcion-vintage span {
-  font-size: 0.7rem;
+  display: block;
+  font-size: 0.65rem;
   color: #ff80ab;
+  text-transform: uppercase;
   letter-spacing: 2px;
+  margin-top: 5px;
 }
 </style>
