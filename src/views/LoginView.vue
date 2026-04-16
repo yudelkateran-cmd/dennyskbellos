@@ -28,23 +28,50 @@
   </div>
 </template>
 
-<script setup>
-import { reactive } from 'vue';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
-const form = reactive({
-  email: '',
+<script setup>
+  import {reactive} from 'vue';
+  import {useRouter} from 'vue-router';
+  import {useStore} from 'vuex'; // 1. Importamos el Store
+  import {auth} from '@/firebase.js';
+  import {signInWithEmailAndPassword} from "firebase/auth";
+
+  const router = useRouter();
+  const store = useStore(); // 2. Inicializamos el Store
+
+  const form = reactive({
+    email: '',
   password: ''
 });
 
-const handleLogin = () => {
-  // Aquí simulamos que el login es exitoso
-  console.log("Login con:", form.email);
-  
-  // Redirigimos a la página de citas
-  router.push('/agendar-cita');
+const handleLogin = async () => {
+  try {
+    // Intentar iniciar sesión con Firebase
+    const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
+  const user = userCredential.user;
+
+  // 3. Actualizamos el Store inmediatamente después del login exitoso
+  store.dispatch('updateUser', {
+    uid: user.uid,
+  email: user.email,
+  nombre: user.displayName || 'Usuario', // Firebase trae el nombre si existe
+  foto: user.photoURL
+    });
+
+  console.log("Sesión iniciada con éxito");
+  router.push('/agendar-cita'); 
+  } catch (error) {
+    console.error("Error al entrar:", error.code);
+
+  // Un toque de amabilidad en los mensajes de error
+  if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+    alert("Correo o contraseña incorrectos. Por favor, inténtalo de nuevo.");
+    } else {
+    alert("Hubo un problema al intentar entrar. Revisa tu conexión.");
+    }
+  }
 };
+
 </script>
 
 <style scoped>
@@ -113,7 +140,8 @@ input:focus {
   padding: 14px;
   border: none;
   border-radius: 50px;
-  background: linear-gradient(45deg, #4e342e, #6d4c41); /* Café elegante para variar del rosado */
+  background: linear-gradient(45deg, #4e342e, #6d4c41);
+  /* Café elegante para variar del rosado */
   color: white;
   font-weight: bold;
   cursor: pointer;
@@ -122,7 +150,8 @@ input:focus {
 
 .btn-glitter-login:hover {
   transform: scale(1.02);
-  background: linear-gradient(45deg, #ff80ab, #f48fb1); /* Cambia a rosado al pasar el mouse */
+  background: linear-gradient(45deg, #ff80ab, #f48fb1);
+  /* Cambia a rosado al pasar el mouse */
 }
 
 .footer-text {

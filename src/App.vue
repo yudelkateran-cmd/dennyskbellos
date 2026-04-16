@@ -11,25 +11,34 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { auth } from './firebase'; // Asegúrate de tener auth exportado en tu firebase.js
+import { computed, onMounted } from 'vue';
+import { useStore } from 'vuex'; // Importamos el Store
+import { auth } from './firebase'; 
 import { onAuthStateChanged } from 'firebase/auth';
 import HeaderView from '@/components/HeaderView.vue';
 import FooterView from '@/components/FooterView.vue';
 
-const usuarioActivo = ref(null);
+const store = useStore();
+
+// Obtenemos el usuario directamente desde el Store (estado reactivo)
+const usuarioActivo = computed(() => store.state.user);
 
 onMounted(() => {
-  // Este es el "vigilante" real de Firebase
+  // Vigilante de Firebase: se activa al entrar, salir o refrescar la página
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // Si el usuario entró con Google, traemos su nombre real
-      usuarioActivo.value = {
+      // Guardamos los datos importantes en el Store usando la acción que creamos
+      store.dispatch('updateUser', {
+        uid: user.uid,
+        email: user.email,
         nombre: user.displayName || 'Usuario',
-        foto: user.photoURL // ¡Incluso podemos traer su foto de Google!
-      };
+        foto: user.photoURL
+      });
+      console.log("Usuario detectado:", user.email);
     } else {
-      usuarioActivo.value = null;
+      // Si no hay usuario, limpiamos el Store
+      store.dispatch('updateUser', null);
+      console.log("No hay sesión activa");
     }
   });
 });
