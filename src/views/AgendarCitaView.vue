@@ -31,41 +31,23 @@
       <div class="form-group">
         <label>Selecciona la Fecha:</label>
         <div v-if="mensajeDiaLleno" class="aviso-lleno">{{ mensajeDiaLleno }}</div>
-        <VDatePicker 
-          v-model="fechaSeleccionada" 
-          :min-date="new Date()" 
-          :attributes="atributosCalendario"
-          @dayclick="onDiaSeleccionado" 
-          mode="date" 
-          expanded 
-          transparent 
-          borderless 
-        />
+        <VDatePicker v-model="fechaSeleccionada" :min-date="new Date()" :attributes="atributosCalendario"
+          @dayclick="onDiaSeleccionado" mode="date" expanded transparent borderless />
       </div>
 
       <div v-if="nuevaCita.fecha && !mensajeDiaLleno" class="form-group">
         <label>Hora para el {{ nuevaCita.fecha }}:</label>
         <div class="horas-grid">
-          <button 
-            type="button" 
-            v-for="h in bloquesHorarios" 
-            :key="h"
-            :class="['hora-btn', { 'seleccionada': nuevaCita.hora === h }]" 
-            :disabled="estaOcupada(nuevaCita.fecha, h)"
-            @click="nuevaCita.hora = h"
-          >
+          <button type="button" v-for="h in bloquesHorarios" :key="h"
+            :class="['hora-btn', { 'seleccionada': nuevaCita.hora === h }]" :disabled="estaOcupada(nuevaCita.fecha, h)"
+            @click="nuevaCita.hora = h">
             {{ h }}
           </button>
         </div>
       </div>
 
       <div class="footer-form">
-        <button 
-          type="submit" 
-          class="btn-enviar" 
-          v-if="!mostrarBotonPago" 
-          :disabled="!formularioListo"
-        >
+        <button type="submit" class="btn-enviar" v-if="!mostrarBotonPago" :disabled="!formularioListo">
           Confirmar Reserva ✨
         </button>
 
@@ -81,13 +63,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { db } from '../firebase';
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { serviciosPeluqueria } from '../servicios.js';
+import { useStore } from 'vuex';
 
+const store = useStore();
+const usuario = computed(() => store.state.user);
+
+// ESTADOS
 const mostrarBotonPago = ref(false);
-const linkMercadoPago = "https://mpago.li/1R4v3Ur";
+const mostrarPopupPago = ref(false);
 
 const listaServicios = ref(serviciosPeluqueria);
 const citasExistentes = ref([]);
@@ -103,45 +90,66 @@ const nuevaCita = ref({
   hora: ''
 });
 
+// DATOS TRANSFERENCIA
+const datosTransferencia = {
+  nombre: 'Dennys Mariangeles Castillo Duran',
+  rut: '26.618.593-6',
+  tipoCuenta: 'Cuenta Corriente',
+  numeroCuenta: '0 000 27 75007 9',
+  banco: 'Banco Santander',
+  correo: 'DENNYSCASTILLO49@GMAIL.COM'
+};
+
+// BANCOS
+const bancosChile = [
+  { nombre: 'Santander', url: 'https://www.santander.cl' },
+  { nombre: 'BancoEstado', url: 'https://www.bancoestado.cl' },
+  { nombre: 'Banco de Chile', url: 'https://www.bancochile.cl' },
+  { nombre: 'BCI', url: 'https://www.bci.cl' },
+  { nombre: 'Itaú', url: 'https://www.itau.cl' },
+  { nombre: 'Falabella', url: 'https://www.bancofalabella.cl' }
+];
+
+// VALIDACIÓN
 const formularioListo = computed(() => {
   return (
     categoriaSeleccionada.value !== '' &&
     nuevaCita.value.serviciosDetalle.length > 0 &&
-    nuevaCita.value.phone.trim().length >= 8 &&
+    nuevaCita.value.phone.trim().length >= 12 &&
     nuevaCita.value.fecha !== '' &&
-    nuevaCita.value.hora !== ''
+    nuevaCita.value.hora !== '' &&
+    mensajeDiaLleno.value === ''
   );
 });
 
+// GUARDAR CITA
 const enviarCita = async () => {
   try {
-    const docRef = await addDoc(collection(db, "citas"), {
+    await addDoc(collection(db, "citas"), {
       ...nuevaCita.value,
       timestamp: new Date()
     });
-
-    if (docRef.id) {
-      mostrarBotonPago.value = true;
-      // Scroll automático hacia el botón de pago para que el usuario lo vea
-      await nextTick();
-      const el = document.getElementById('seccion-pago');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
+    mostrarBotonPago.value = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (e) {
-    console.error("Error Firebase:", e);
-    alert("Hubo un problema al conectar con la base de datos.");
+    console.error(e);
+    alert("Error al guardar la cita.");
   }
 };
 
-const irAlPago = () => {
-  window.open(linkMercadoPago, '_blank');
-  // Opcional: no recargar de inmediato para que el usuario pueda volver a la pestaña si falla el pago
+// POPUP
+const abrirPopupPago = () => {
+  mostrarPopupPago.value = true;
 };
 
-// ... Resto de tus funciones (limpiarServicios, cargarCitas, etc) se mantienen igual ...
+const cerrarPopupPago = () => {
+  mostrarPopupPago.value = false;
+};
+
+// SERVICIOS
 const serviciosDisponibles = computed(() => {
   const cat = listaServicios.value.find(s => s.nombre === categoriaSeleccionada.value);
-  return cat && cat.subservicios ? cat.subservicios : [];
+  return cat ? cat.subservicios : [];
 });
 
 const limpiarServicios = () => {
@@ -150,11 +158,11 @@ const limpiarServicios = () => {
   nuevaCita.value.hora = '';
 };
 
+// CALENDARIO
 const atributosCalendario = computed(() => {
   return citasExistentes.value.map(cita => ({
     dot: 'pink',
-    dates: new Date(cita.fecha + 'T12:00:00'),
-    popover: { label: 'Ocupado' }
+    dates: new Date(cita.fecha + 'T12:00:00')
   }));
 });
 
@@ -166,13 +174,13 @@ const onDiaSeleccionado = (day) => {
 const bloquesHorarios = ['09:00', '10:00', '11:00', '12:00', '15:00', '16:00', '17:00', '18:00'];
 
 const cargarCitas = async () => {
-  try {
-    const res = await getDocs(collection(db, "citas"));
-    citasExistentes.value = res.docs.map(doc => doc.data());
-  } catch (e) { console.error(e); }
+  const res = await getDocs(collection(db, "citas"));
+  citasExistentes.value = res.docs.map(doc => doc.data());
 };
 
-const estaOcupada = (fecha, hora) => citasExistentes.value.some(c => c.fecha === fecha && c.hora === hora);
+const estaOcupada = (fecha, hora) => {
+  return citasExistentes.value.some(c => c.fecha === fecha && c.hora === hora);
+};
 
 const validarFechaSeleccionada = () => {
   nuevaCita.value.hora = '';
@@ -191,7 +199,7 @@ onMounted(cargarCitas);
   padding: 30px;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   height: auto;
 }
 
@@ -205,8 +213,15 @@ onMounted(cargarCitas);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .btn-pago {
@@ -267,17 +282,6 @@ onMounted(cargarCitas);
   cursor: pointer;
 }
 
-.booking-container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 40px;
-  border-radius: 25px;
-  background: #ffffff;
-  border: 1px solid #fce4ec;
-  box-shadow: 0 20px 40px rgba(121, 85, 72, 0.08);
-  font-family: 'Playfair Display', serif;
-}
-
 h2 {
   color: #4e342e;
   font-size: 2.2rem;
@@ -326,6 +330,4 @@ input[type="tel"] {
   background: #ff80ab;
   color: white;
 }
-
-
 </style>
