@@ -3,7 +3,7 @@
     <HeaderView :usuario="usuarioActivo" />
 
     <main class="main-content">
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </main>
 
     <FooterView />
@@ -13,7 +13,7 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex'; // Importamos el Store
-import { auth } from './firebase'; 
+import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import HeaderView from '@/components/HeaderView.vue';
 import FooterView from '@/components/FooterView.vue';

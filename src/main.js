@@ -11,7 +11,7 @@ const app = createApp(App)
 // 2. Instalamos todos los plugins que necesites
 app.use(store)
 app.use(router)
-app.use(VCalendar, {}) // Aquí activamos el calendario que tenías pendiente
+app.use(VCalendar, {}) 
 
-// 3. Al final de TODO, montamos la aplicación en el HTML
+
 app.mount('#app')

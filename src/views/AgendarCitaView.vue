@@ -13,8 +13,8 @@
         </select>
       </div>
 
-      <div class="form-group" v-if="serviciosDisponibles.length > 0">
-        <label>Tratamientos disponibles:</label>
+      <div class="form-group" v-if="categoriaSeleccionada && serviciosDisponibles.length > 0">
+        <label>Tratamientos disponibles para {{ categoriaSeleccionada }}:</label>
         <div class="sub-servicios-grid">
           <div v-for="item in serviciosDisponibles" :key="item" class="checkbox-item">
             <input type="checkbox" :id="item" :value="item" v-model="nuevaCita.serviciosDetalle" />
@@ -36,7 +36,7 @@
       </div>
 
       <div v-if="nuevaCita.fecha && !mensajeDiaLleno" class="form-group">
-        <label>Hora disponible:</label>
+        <label>Hora disponible para el {{ nuevaCita.fecha }}:</label>
         <div class="horas-grid">
           <button type="button" v-for="h in bloquesHorarios" :key="h"
             :class="['hora-btn', { 'seleccionada': nuevaCita.hora === h }]" :disabled="estaOcupada(nuevaCita.fecha, h)"
@@ -46,10 +46,18 @@
         </div>
       </div>
 
-      <button type="submit" class="btn-enviar"
-        :disabled="!nuevaCita.hora || mensajeDiaLleno || nuevaCita.serviciosDetalle.length === 0">
-        Confirmar Reserva ✨
-      </button>
+      <div class="footer-form">
+        <button type="submit" class="btn-enviar" v-if="!mostrarBotonPago" :disabled="!formularioListo">
+          Confirmar Reserva ✨
+        </button>
+      </div>
+
+      <div v-if="mostrarBotonPago" class="pago-container">
+        <p class="pago-instruccion">¡Casi listo! Haz clic abajo para pagar y asegurar tu hora:</p>
+        <button type="button" @click="irAlPago" class="btn-pago">
+          Pagar con Mercado Pago 💳
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -60,6 +68,9 @@ import { db } from '../firebase';
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { serviciosPeluqueria } from '../servicios.js';
 
+const mostrarBotonPago = ref(false);
+const linkMercadoPago = "https://mpago.li/1R4v3Ur";
+
 const listaServicios = ref(serviciosPeluqueria);
 const citasExistentes = ref([]);
 const mensajeDiaLleno = ref('');
@@ -69,23 +80,56 @@ const categoriaSeleccionada = ref('');
 const nuevaCita = ref({
   phone: '',
   servicioPrincipal: '',
-  serviciosDetalle: [], // Aquí se guardan los checkboxes elegidos
+  serviciosDetalle: [],
   fecha: '',
   hora: ''
 });
 
-// Extrae los sub-servicios de la data original
+// VALIDACIÓN UNIFICADA: Esta es la que manda
+const formularioListo = computed(() => {
+  return (
+    categoriaSeleccionada.value !== '' &&
+    nuevaCita.value.serviciosDetalle.length > 0 &&
+    nuevaCita.value.phone.trim().length >= 8 &&
+    nuevaCita.value.fecha !== '' &&
+    nuevaCita.value.hora !== '' &&
+    mensajeDiaLleno.value === ''
+  );
+});
+
+const enviarCita = async () => {
+  try {
+    const docRef = await addDoc(collection(db, "citas"), {
+      ...nuevaCita.value,
+      timestamp: new Date()
+    });
+
+    if (docRef.id) {
+      alert("¡Cita guardada correctamente!");
+      mostrarBotonPago.value = true;
+    }
+  } catch (e) {
+    console.error("Error:", e);
+    alert("Error al guardar la cita.");
+  }
+};
+
+const irAlPago = () => {
+  window.open(linkMercadoPago, '_blank');
+  setTimeout(() => { location.reload(); }, 3000);
+};
+
 const serviciosDisponibles = computed(() => {
   const cat = listaServicios.value.find(s => s.nombre === categoriaSeleccionada.value);
-  return cat && cat.subServicios ? cat.subServicios : ['Servicio Estándar'];
+  return cat && cat.subservicios ? cat.subservicios : [];
 });
 
 const limpiarServicios = () => {
   nuevaCita.value.serviciosDetalle = [];
   nuevaCita.value.servicioPrincipal = categoriaSeleccionada.value;
+  nuevaCita.value.hora = '';
 };
 
-// Calendario
 const atributosCalendario = computed(() => {
   return citasExistentes.value.map(cita => ({
     dot: 'pink',
@@ -116,19 +160,20 @@ const validarFechaSeleccionada = () => {
   mensajeDiaLleno.value = total >= bloquesHorarios.length ? '❌ Día completo' : '';
 };
 
-const enviarCita = async () => {
-  try {
-    await addDoc(collection(db, "citas"), nuevaCita.value);
-    alert("¡Cita reservada!");
-    location.reload(); // Para limpiar todo
-  } catch (e) { console.error(e); }
-};
-
 onMounted(cargarCitas);
 </script>
 
 <style scoped>
-/* RECUERDA: Agregué estos estilos para los checkboxes */
+/* Mantén tus estilos actuales de .sub-servicios-grid, .btn-pago, etc. */
+.aviso-lleno {
+  color: white;
+  background: #e57373;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
 .sub-servicios-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -164,6 +209,39 @@ onMounted(cargarCitas);
   font-family: 'Playfair Display', serif;
 }
 
+.pago-container {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #fff9c4;
+  /* Un amarillo suave para llamar la atención */
+  border-radius: 15px;
+  border: 1px dashed #fbc02d;
+}
+
+.pago-instruccion {
+  color: #4e342e;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.btn-pago {
+  width: 100%;
+  background-color: #009ee3;
+  /* Azul oficial de Mercado Pago */
+  color: white;
+  border: none;
+  padding: 18px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-pago:hover {
+  background-color: #007eb5;
+}
+
 h2 {
   color: #4e342e;
   font-size: 2.2rem;
@@ -193,10 +271,37 @@ input[type="tel"] {
   background-color: #fafafa;
 }
 
+.booking-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 40px;
+  border-radius: 25px;
+  background: #ffffff;
+  /* CAMBIO CLAVE: Quitar alturas fijas y permitir scroll */
+  height: auto; 
+  min-height: 100vh; /* Opcional: para que ocupe al menos el alto de la pantalla */
+  overflow: visible; /* Asegura que nada se corte */
+  display: block; 
+}
+
+/* 2. Asegurar que el formulario no limite el tamaño */
+form {
+  display: block;
+  height: auto;
+}
+
+/* 3. Darle un espacio extra al final para que el botón no quede pegado al borde */
+.footer-form {
+  padding-top: 20px;
+  padding-bottom: 50px; /* Espacio para que el usuario pueda hacer scroll cómodo */
+}
+
+/* 4. Si las horas se ven muy grandes, usa 4 columnas para que ocupen menos alto */
 .horas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .hora-btn {

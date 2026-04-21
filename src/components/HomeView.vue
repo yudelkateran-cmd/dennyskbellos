@@ -6,7 +6,7 @@
         <h1 class="brand-title">DennysKbellos</h1>
         <p class="hero-subtitle">La magia de embellecer y cuidar tu cabello.</p>
         <router-link :to="usuarioActivo ? '/agendar-cita' : '/login'" class="btn-glitter-main">
-          {{ usuarioActivo ? 'Reservar Cita' : 'Iniciar Sesión para Reservar' }}
+          {{ usuarioActivo ? 'Reservar Cita' : 'Reservar Cita' }}
         </router-link>
       </div>
     </section>

@@ -61,7 +61,7 @@ const usuario = reactive({
 
 const handleRegistro = async () => {
   try {
-    // 1. Crear usuario en Firebase (Reemplaza a MockAPI)
+    // 1. Crear usuario en Firebase 
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       usuario.email,

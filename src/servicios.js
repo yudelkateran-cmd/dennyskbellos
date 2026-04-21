@@ -16,19 +16,19 @@ const todasLasFotos = Object.values(contextoImagenes).map((mod) => mod.default);
 /** @type {Servicio[]} */ // <-- Aquí le decimos que este array contiene "Servicios"
 export const serviciosPeluqueria = [
  {
-    id: 1,
-    nombre: 'Colorimetría',
-    subservicios: ['Corrección de Color', 'Cobertura de Canas', 'Balayage', 'Baby Lights'],
-    fotos: todasLasFotos.filter((/** @type {string} */ foto) => {
-      // 1. Definimos las palabras clave dentro de la función
-      const palabrasClave = ['balage', 'balayage', 'canas', 'baby', 'color', 'mechas'];
-      
-      // 2. Usamos .some() para ver si la foto coincide con alguna palabra
-      // Usamos .toLowerCase() para que no importe si el archivo está en MAYÚSCULAS
-      return palabrasClave.some(palabra => foto.toLowerCase().includes(palabra));
-    }),
-    detalle: 'Expertos en cambios de look y cuidado capilar.'
-  },
+  id: 1,
+  nombre: 'Colorimetría',
+  subservicios: ['Corrección de Color', 'Cobertura de Canas', 'Balayage', 'Baby Lights'],
+  fotos: todasLasFotos.filter((foto) => {
+    // Es buena práctica definir esto fuera si son muchas fotos, 
+    // pero aquí funciona bien.
+    const palabrasClave = ['balage', 'balayage', 'canas', 'baby', 'color', 'mechas'];
+    const nombreArchivo = foto.toLowerCase();
+    
+    return palabrasClave.some(palabra => nombreArchivo.includes(palabra));
+  }),
+  detalle: 'Expertos en cambios de look y cuidado capilar.'
+},
 {
     id: 2,
     nombre: 'Tratamiento Capilar',
