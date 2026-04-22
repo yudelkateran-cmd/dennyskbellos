@@ -62,9 +62,14 @@
             <div class="btn-content">
               <span class="main-text">Pagar con Webpay / Débito / Crédito</span>
               <div class="logos-pago">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Visa_logo.svg" alt="Visa" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" />
-                <img src="https://www.mercadopago.cl/instore/merchant/assets/img/icon-pp-mp.svg" alt="MP" />
+                <img src="https://res.cloudinary.com/dzv9u66pu/image/upload/v1714571000/visa_logo.png" alt="Visa" />
+
+                <img src="https://res.cloudinary.com/dzv9u66pu/image/upload/v1714571000/mastercard_logo.png"
+                  alt="Mastercard" />
+
+                <img src="https://res.cloudinary.com/dzv9u66pu/image/upload/v1714571000/mercado-pago-logo.png"
+                  alt="MP" />
+
                 <span class="webpay-label">Webpay</span>
               </div>
             </div>
@@ -115,7 +120,7 @@ const formularioListo = computed(() => {
 // GUARDAR CITA Y MOSTRAR PAGO
 const enviarCita = async () => {
   console.log("Intentando enviar cita...", nuevaCita.value);
-  
+
   if (!formularioListo.value) {
     alert("Por favor completa todos los campos.");
     return;
@@ -129,7 +134,7 @@ const enviarCita = async () => {
     });
 
     console.log("Documento guardado con ID: ", docRef.id);
-    
+
     // Si llegamos aquí, todo salió bien
     mostrarBotonPago.value = true;
 
