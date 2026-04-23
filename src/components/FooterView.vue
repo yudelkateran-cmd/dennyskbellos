@@ -1,54 +1,51 @@
 <template>
   <footer class="main-footer">
     <div class="footer-content">
-      <!-- Sección Marca -->
-      <div class="footer-section brand-section">
+      
+      <div class="footer-section">
         <h4>DennysKbellos</h4>
-        <p class="slogan">Experta en Colorimetría y Estilo.</p>
-        
-        <!-- Instagram Simplificado -->
-        <a href="https://www.instagram.com/dennys_kbellos" target="_blank" class="social-link">
-          <span class="icon">📸</span>
-          <span class="text">@dennys_kbellos</span>
-        </a>
+        <p>Experta en Colorimetría y Estilo.</p>
+
+        <div class="social-buttons-container">
+          <a href="https://www.instagram.com/dennys_kbellos" target="_blank" class="btn-instagram">
+            <i class="bi bi-instagram"></i> @dennys_kbellos
+          </a>
+
+          <a href="https://wa.me/56956919142" target="_blank" class="btn-whatsapp">
+            <div class="icon-container-mini"><i class="bi bi-whatsapp"></i></div>
+            <div class="text-container">
+              <span class="label">WhatsApp</span>
+              <span class="number">+569 5691 9142</span>
+            </div>
+          </a>
+        </div>
       </div>
 
-      <!-- Sección Contacto y Mapa -->
-      <div class="footer-section contact-section">
+      <div class="footer-section">
         <h4>Contacto</h4>
         <p class="address">
-          <span>📍</span> 
+          <span>📍</span>
           <span class="address-text">JJ. La Torre 461, Puertas del Mar, La Serena, Chile</span>
         </p>
-
-        <!-- Contenedor del Mapa -->
+        
         <div class="map-container">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3459.3475871271613!2d-71.2612349!3d-29.9118747!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9691ca76939634d3%3A0x6095033c462702a!2sJuan%20Jos%C3%A9%20Latorre%20461%2C%20La%20Serena%2C%20Coquimbo!5e0!3m2!1ses!2scl!4v1712580000000!5m2!1ses!2scl" 
-            width="100%" 
-            height="150" 
-            style="border:0;" 
-            allowfullscreen 
-            loading="lazy">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3459.123!2d-71.255!3d-29.905!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjnCsDU0JzE4LjAiUyA3McKwMTUnMTguMCJX!5e0!3m2!1ses!2scl!4v1620000000000!5m2!1ses!2scl"
+            width="100%" height="150" style="border:0;" allowfullscreen loading="lazy">
           </iframe>
         </div>
-        
-        <a href="https://wa.me/56956919142?text=Hola!%20Me%20gustaría%20agendar%20una%20cita%20en%20DennysKbellos" 
-           target="_blank" 
-           class="social-link whatsapp-style">
-           <span class="icon">📱</span> 
-           <span class="text">+56 9 5691 9142</span>
-        </a>
       </div>
+
     </div>
-    
+
     <div class="footer-bottom">
-      &copy; 2026 Diseñado por Inv. JRT SPA - DennysKbellos
+      © 2026 Diseñado por Inv. JRT SPA - DennysK'bellos
     </div>
   </footer>
 </template>
 
 <style scoped>
+/* 1. ESTRUCTURA PRINCIPAL DEL FOOTER */
 .main-footer {
   background-color: #4e342e;
   color: #fce4ec;
@@ -70,13 +67,136 @@
   max-width: 450px;
 }
 
-h4 { 
-  color: white; 
-  margin-bottom: 20px; 
+.footer-section-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
+  /* O center, si quieres centrar todo el footer */
+}
+
+.social-buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 15px;
+  flex-wrap: wrap; /* Para que en celular no se rompa */
+}
+
+
+h4 {
+  color: white;
+  margin-bottom: 20px;
   font-size: 1.4rem;
 }
 
-/* Estilo unificado para enlaces sociales (Instagram y WhatsApp) */
+/* 2. BOTÓN INSTAGRAM (Limpiado y Unificado) */
+.btn-instagram {
+  box-shadow: 0 4px 10px rgba(204, 35, 102, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  height: 48px;
+  /* Misma altura que el de WhatsApp */
+  box-sizing: border-box;
+
+}
+
+.btn-instagram:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(204, 35, 102, 0.6);
+  filter: brightness(1.1);
+}
+
+.btn-instagram:active {
+  transform: translateY(1px);
+}
+
+.btn-instagram i,
+.btn-instagram img {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* 3. BOTÓN WHATSAPP */
+.btn-whatsapp {
+  display: inline-flex; /* IMPORTANTE para alinear icono y texto */
+  align-items: center;
+  background-color: #25d366; /* El verde de WhatsApp */
+  color: white;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 50px;
+  height: 48px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+}
+
+.btn-whatsapp:hover {
+  transform: scale(1.03);
+  background-color: #20ba5a;
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+}
+
+.btn-instagram, .btn-whatsapp {
+  flex: 1; /* Esto hace que ambos midan lo mismo */
+  min-width: 180px; /* Tamaño mínimo para que no se vean diminutos */
+  height: 42px; /* Un poco más delgados se ven más finos */
+  padding: 0 15px;
+  font-size: 0.9rem; /* Texto un pelo más pequeño para elegancia */
+  border-radius: 12px; /* Menos redondeado (no tan cápsula) se ve más moderno */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.icon-container {
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  padding-right: 12px;
+}
+
+.icon-container-mini {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.9;
+}
+
+.number {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+/* 4. OTROS ELEMENTOS SOCIALES Y MAPA */
 .social-link {
   display: flex;
   align-items: center;
@@ -98,12 +218,19 @@ h4 {
   transform: translateX(5px);
 }
 
-/* Estilos para el Mapa */
 .map-container {
-  margin: 15px 0;
-  border-radius: 12px;
+  margin-top: 20px;
+  border-radius: 20px;
+  /* Bordes más suaves, más modernos */
   overflow: hidden;
-  border: 2px solid rgba(252, 228, 236, 0.1);
+  border: 3px solid rgba(252, 228, 236, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.map-container:hover {
+  transform: scale(1.02);
+  /* Un toque de interactividad */
 }
 
 .address {
@@ -112,11 +239,27 @@ h4 {
   line-height: 1.4;
 }
 
+.address i {
+  color: #ff80ab;
+  /* Usar el color rosa de tu marca para los iconos */
+  font-size: 1.2rem;
+}
+
 .footer-bottom {
   text-align: center;
   border-top: 1px solid rgba(252, 228, 236, 0.2);
   padding-top: 30px;
   font-size: 0.85rem;
   opacity: 0.8;
+}
+@media (max-width: 600px) {
+  .social-buttons-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .btn-instagram, .btn-whatsapp {
+    width: 100%; /* En móvil, que ocupen todo el ancho */
+    max-width: 300px;
+  }
 }
 </style>

@@ -16,7 +16,7 @@
         <router-link to="/servicios" class="nav-link">Servicios</router-link>
 
         <div v-if="!usuarioActivo" class="auth-buttons">
-          <router-link to="/login" class="nav-link">Entrar</router-link>
+          <router-link to="/login" class="nav-link">Iniciar Sesión</router-link>
           <router-link to="/registro" class="btn-glitter">Registrarse</router-link>
         </div>
 
@@ -24,6 +24,7 @@
           <div class="user-info">
             <span class="greeting">Hola,</span>
             <span class="name">{{ usuarioActivo.displayName?.split(' ')[0] }}</span>
+            <button @click="cerrarSesion" class="btn-logout">Cerrar sesión</button>
           </div>
           <div class="avatar">
             {{ usuarioActivo.displayName?.charAt(0).toUpperCase() }}
@@ -37,15 +38,27 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { auth } from '@/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useRouter } from 'vue-router';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 const usuarioActivo = ref(null);
+const router = useRouter();
 
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
     usuarioActivo.value = user;
   });
 });
+
+// IMPORTANTE: Debes definir la función que el botón llama al hacer @click
+const cerrarSesion = async () => {
+  try {
+    await signOut(auth);
+    router.push('/'); // Redirige a inicio tras salir
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+  }
+};
 </script>
 
 <style scoped>
@@ -56,6 +69,22 @@ onMounted(() => {
   position: sticky;
   top: 0;
   z-index: 1000;
+}
+
+.btn-logout {
+  background: none;
+  border: none;
+  color: #ff80ab;
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-align: right;
+  font-weight: bold;
+}
+
+.btn-logout:hover {
+  color: #4e342e;
 }
 
 .header-container {
@@ -78,7 +107,8 @@ onMounted(() => {
 
 /* Centro - El logo controlado */
 .logo-central .logo-img {
-  height: 80px; /* Tamaño controlado para que no rompa nada */
+  height: 80px;
+  /* Tamaño controlado para que no rompa nada */
   width: auto;
   display: block;
 }
@@ -132,8 +162,16 @@ onMounted(() => {
   text-align: right;
 }
 
-.greeting { font-size: 0.7rem; color: #ad8a81; }
-.name { font-size: 0.85rem; font-weight: bold; color: #4e342e; }
+.greeting {
+  font-size: 0.7rem;
+  color: #ad8a81;
+}
+
+.name {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #4e342e;
+}
 
 .avatar {
   width: 32px;
@@ -149,7 +187,12 @@ onMounted(() => {
 
 /* Responsivo */
 @media (max-width: 768px) {
-  .logo-text { display: none; }
-  .logo-central .logo-img { height: 60px; }
+  .logo-text {
+    display: none;
+  }
+
+  .logo-central .logo-img {
+    height: 60px;
+  }
 }
 </style>
