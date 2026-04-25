@@ -19,6 +19,15 @@
 
 <script setup>
 defineProps(['imagenes']);
+const cerrarFoto = () => {
+  // Tu lógica para cerrar...
+
+  // Esto evita que el navegador intente "re-calcular" el scroll
+  const scrollActual = window.scrollY;
+  setTimeout(() => {
+    window.scrollTo(0, scrollActual);
+  }, 10);
+};
 </script>
 
 <style scoped>
@@ -35,12 +44,18 @@ defineProps(['imagenes']);
 
 .galeria-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));*/
   gap: 60px;
-  /* Más espacio para la rotación */
   max-width: 1200px;
   margin: 0 auto;
+
+  display: grid;
+  min-height: 500px;
+  /* Reserva espacio para que la página no colapse a 0 */
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+
 }
+
 
 .foto-item {
   display: flex;
