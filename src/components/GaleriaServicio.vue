@@ -18,7 +18,6 @@
 </template>
 
 <script setup>
-// ESTO ES LO QUE FALTA: Sin esto, "imagenes" es invisible para el componente
 defineProps(['imagenes']);
 </script>
 

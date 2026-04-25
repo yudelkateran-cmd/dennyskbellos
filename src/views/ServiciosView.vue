@@ -24,7 +24,6 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 // Importamos la data de servicios
 import { serviciosPeluqueria } from '@/servicios.js';
-// Importación corregida del componente de las Polaroids
 import GaleriaServicio from '@/components/GaleriaServicio.vue'; 
 
 const route = useRoute();
