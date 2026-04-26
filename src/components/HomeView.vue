@@ -3,7 +3,7 @@
     <!-- --- SECCIÓN HERO --- -->
     <section class="hero">
       <div class="hero-content">
-        <h1 class="brand-title">DennysKbellos</h1>
+        <h1 class="brand-title">DennysK'bellos</h1>
         <p class="hero-subtitle">La magia de embellecer y cuidar tu cabello.</p>
         <router-link :to="usuarioActivo ? '/agendar-cita' : '/login'" class="btn-glitter-main">
           {{ usuarioActivo ? 'Reservar Cita' : 'Reservar Cita' }}
@@ -15,7 +15,7 @@
     <section class="about-owner">
       <div class="about-container">
         <div class="owner-image-wrapper">
-          <!-- Asegúrate de tener la foto en esta ruta o cámbiala por la correcta -->
+
           <img src="@/assets/dennis2.jpeg" alt="Dennys - Dueña de DennysKbellos" class="owner-photo">
           <div class="image-badge">Dueña & Estilista</div>
         </div>
@@ -62,16 +62,20 @@ const servicios = serviciosPeluqueria;
 <style scoped>
 /* --- ESTILOS EXISTENTES (HERO) --- */
 .hero {
-  background: linear-gradient(rgba(78, 52, 46, 0.8), rgba(78, 52, 46, 0.9)),
-    url('https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80');
+  background: linear-gradient(rgba(78, 52, 46, 0.6), rgba(78, 52, 46, 0.9)),
+    url('@/assets/portada2.png');
   background-size: cover;
-  background-position: center;
+  background-position: center top;
+  background-repeat: no-repeat;
   color: white;
-  padding: 120px 20px;
+  padding: 100px 20px;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  overflow: hidden;
+  min-height: 400px;
 }
 
 .brand-title {

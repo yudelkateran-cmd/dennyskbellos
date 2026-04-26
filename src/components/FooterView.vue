@@ -37,7 +37,7 @@
     </div>
 
     <div class="footer-bottom">
-      © 2026 Diseñado por Inv. JRT SPA — DennysKbellos
+      © 2026 Diseñado por Inv. JRT SPA — DennysK'bellos
     </div>
   </footer>
 </template>
